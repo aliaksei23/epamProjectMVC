@@ -20,7 +20,7 @@ public class Controller extends HttpServlet {
 //        String strNum = request.getParameter("num");
 //        int resNum = 2 * Integer.parseInt(strNum);
 //        request.setAttribute("result",resNum);
-        String commandStr = request.getParameter("command") + "asf";
+        String commandStr = request.getParameter("command");
         Command command = CommandType.define(commandStr);
         String page = command.execute(request);
         request.getRequestDispatcher(page).forward(request, response);
