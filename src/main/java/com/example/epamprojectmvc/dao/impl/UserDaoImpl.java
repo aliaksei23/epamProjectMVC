@@ -3,6 +3,7 @@ package com.example.epamprojectmvc.dao.impl;
 import com.example.epamprojectmvc.dao.BaseDao;
 import com.example.epamprojectmvc.dao.UserDao;
 import com.example.epamprojectmvc.entity.User;
+import com.example.epamprojectmvc.exception.DaoException;
 import com.example.epamprojectmvc.pool.ConnectionPool;
 import org.intellij.lang.annotations.Language;
 
@@ -23,7 +24,7 @@ public class UserDaoImpl implements UserDao, BaseDao<User> {
     }
 
     @Override
-    public boolean authenticate(String login, String password) {
+    public boolean authenticate(String login, String password) throws DaoException {
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
         } catch (SQLException e) {
@@ -43,7 +44,8 @@ public class UserDaoImpl implements UserDao, BaseDao<User> {
                 match = password.equals(passFromDb);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DaoException(e);
+//            e.printStackTrace();
         }
         return match;
     }

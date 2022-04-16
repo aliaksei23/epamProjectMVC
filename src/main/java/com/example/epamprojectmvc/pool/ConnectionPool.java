@@ -22,7 +22,7 @@ public class ConnectionPool {
         try {
             DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -41,11 +41,11 @@ public class ConnectionPool {
         prop.put("serverSslCert", "classpath:server.crt");
 
         for (int i = 0; i < CAPACITY; i++) {
-            Connection connection = null;
+            Connection connection;
             try {
                 connection = DriverManager.getConnection(url, prop);
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new ExceptionInInitializerError(e);
             }
             free.add(connection);
         }
@@ -72,7 +72,8 @@ public class ConnectionPool {
             connection = free.take();
             used.put(connection);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // log
+            Thread.currentThread().interrupt();
         }
         return connection;
     }
@@ -82,10 +83,11 @@ public class ConnectionPool {
             used.remove(connection);
             free.put(connection);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            // log
+            Thread.currentThread().interrupt();
         }
     }
-
+//deregisterDriver
     public void destroyPool(){
         for (int i = 0; i < CAPACITY; i++) {
             try {
