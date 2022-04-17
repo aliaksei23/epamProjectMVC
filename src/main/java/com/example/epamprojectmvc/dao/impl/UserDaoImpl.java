@@ -9,7 +9,7 @@ import org.intellij.lang.annotations.Language;
 
 import java.sql.*;
 import java.util.List;
-import java.util.Properties;
+
 
 public class UserDaoImpl implements UserDao, BaseDao<User> {
 
@@ -25,11 +25,6 @@ public class UserDaoImpl implements UserDao, BaseDao<User> {
 
     @Override
     public boolean authenticate(String login, String password) throws DaoException {
-        try {
-            DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         boolean match = false;
         try (Connection connection = ConnectionPool.getInstance().getConnection();

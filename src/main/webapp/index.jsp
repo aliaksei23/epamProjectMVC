@@ -16,6 +16,11 @@
     <input type="submit" name="sub" value="Push"/>
     <br/>
     ${login_msg}
+    <br/>
+    ${pageContext.session.id}
+    <br/>
+    ${filter_atr}
+
 </form>
 
 </body>

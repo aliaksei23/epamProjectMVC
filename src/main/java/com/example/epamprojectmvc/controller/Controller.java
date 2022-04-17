@@ -9,12 +9,18 @@ import com.example.epamprojectmvc.pool.ConnectionPool;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @WebServlet(name = "helloServlet", urlPatterns = {"/controller", "*.do"})
 public class Controller extends HttpServlet {
 
+    private static final Logger logger = LogManager.getLogger();
 
     public void init() {
+        ConnectionPool.getInstance();
+        logger.log(Level.INFO, "----------------Servlet init : " + this.getServletInfo());
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -42,5 +48,6 @@ public class Controller extends HttpServlet {
 
     public void destroy() {
         ConnectionPool.getInstance().destroyPool();
+        logger.log(Level.INFO, "----------------Servlet Destroyed : " + this.getServletName() );
     }
 }
