@@ -9,6 +9,7 @@ import org.intellij.lang.annotations.Language;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Optional;
 
 
 public class UserDaoImpl implements UserDao, BaseDao<User> {
@@ -23,15 +24,34 @@ public class UserDaoImpl implements UserDao, BaseDao<User> {
         return instance;
     }
 
-    @Override
-    public boolean authenticate(String login, String password) throws DaoException {
+//    @Override
+//    public boolean authenticate(String login, String password) throws DaoException {
+//        boolean match = false;
+//        try (Connection connection = ConnectionPool.getInstance().getConnection();
+//             PreparedStatement statement = connection.prepareStatement(SELECT_PASSWORD_LOGIN)) {
+//            statement.setString(1, login);
+//            ResultSet resultSet = statement.executeQuery();
+//
+//            @Language("SQL")
+//            String passFromDb;
+//            if (resultSet.next()) {
+//                passFromDb = resultSet.getString(1);
+//                match = password.equals(passFromDb);
+//            }
+//        } catch (SQLException e) {
+//            throw new DaoException(e);
+////            e.printStackTrace();
+//        }
+//        return match;
+//    }
 
-        boolean match = false;
+    @Override
+    public Optional<User> authenticate(String login, String password) throws DaoException {
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_PASSWORD_LOGIN)) {
             statement.setString(1, login);
             ResultSet resultSet = statement.executeQuery();
-
+            Optional<User> userOptional
             @Language("SQL")
             String passFromDb;
             if (resultSet.next()) {

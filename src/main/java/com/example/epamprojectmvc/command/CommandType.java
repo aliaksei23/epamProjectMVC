@@ -1,9 +1,6 @@
 package com.example.epamprojectmvc.command;
 
-import com.example.epamprojectmvc.command.impl.AddUserCommand;
-import com.example.epamprojectmvc.command.impl.DefaultCommand;
-import com.example.epamprojectmvc.command.impl.LoginCommand;
-import com.example.epamprojectmvc.command.impl.LogoutCommand;
+import com.example.epamprojectmvc.command.impl.*;
 
 import java.util.Locale;
 
@@ -12,6 +9,7 @@ public enum CommandType {
     ADD_USER(new AddUserCommand()),
     LOGIN(new LoginCommand()),
     LOGOUT(new LogoutCommand()),
+    REGISTRATION(new RegistrationCommand()),
     DEFAULT(new DefaultCommand());
 
     Command command;

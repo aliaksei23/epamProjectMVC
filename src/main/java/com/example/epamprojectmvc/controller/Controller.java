@@ -23,9 +23,14 @@ public class Controller extends HttpServlet {
         logger.log(Level.INFO, "----------------Servlet init : " + this.getServletInfo());
     }
 
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("text/html");
         String commandStr = request.getParameter("command");
+//        if (commandStr.equals("reg")){
+//        String rg = request.getParameter("reg");
+//        request.setAttribute("reg_here", rg);
+//        request.getRequestDispatcher("pages/registration.jsp").forward(request,response);}
         Command command = CommandType.define(commandStr);
         String page;
         try {
@@ -48,6 +53,6 @@ public class Controller extends HttpServlet {
 
     public void destroy() {
         ConnectionPool.getInstance().destroyPool();
-        logger.log(Level.INFO, "----------------Servlet Destroyed : " + this.getServletName() );
+        logger.log(Level.INFO, "----------------Servlet Destroyed : " + this.getServletName());
     }
 }

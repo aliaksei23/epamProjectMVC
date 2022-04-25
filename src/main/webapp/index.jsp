@@ -20,7 +20,10 @@
     ${pageContext.session.id}
     <br/>
     ${filter_atr}
-
+</form>
+<form action="controller">
+    <input type="hidden" name="command" value="registration"/>
+    <input type="submit" name="registration" value="Register"/>
 </form>
 
 </body>
