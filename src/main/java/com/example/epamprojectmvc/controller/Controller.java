@@ -38,11 +38,9 @@ public class Controller extends HttpServlet {
             request.getRequestDispatcher(page).forward(request, response);
 //            response.sendRedirect(page);
         } catch (CommandException e) {
-//            response.sendError(500);//1
-//            e.printStackTrace();
+
             throw new ServletException(e.getMessage());//2
-//            request.setAttribute("error_msg", e);
-//            request.getRequestDispatcher("pages/error/error_500.jsp").forward(request,response);
+
         }
     }
 

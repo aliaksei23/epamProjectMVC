@@ -6,6 +6,8 @@ import com.example.epamprojectmvc.entity.UserRole;
 import com.example.epamprojectmvc.exception.DaoException;
 import com.example.epamprojectmvc.mapper.ColumnName;
 import com.example.epamprojectmvc.mapper.UserMapper;
+import com.mysql.cj.protocol.ColumnDefinition;
+import com.mysql.cj.protocol.a.result.NativeResultset;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,23 +26,22 @@ public class UserMapperImpl implements UserMapper<User> {
 //        if (!resultSet.isBeforeFirst()) {
 //            LOGGER.log(Level.INFO, "resultSet empty");
 //        } else {
-            try {
-                LOGGER.log(Level.INFO, "resultSet is not empty");
+        try {
+            LOGGER.log(Level.INFO, "resultSet is not empty");
             user.setId(Long.parseLong(resultSet.getString(ColumnName.USER_ID)));
-            user.setUserRole(UserRole.valueOf((resultSet.getString(ColumnName.USER_ROLE_ID))));//todo work?
+            user.setUserRole(UserRole.valueOf(resultSet.getString(ColumnName.USER_ROLE_ID)));//todo work?
             user.setName(resultSet.getString(ColumnName.USER_NAME));
             user.setSurname(resultSet.getString(ColumnName.USER_SURNAME));
             user.setSurname(resultSet.getString(ColumnName.USER_SURNAME));
             user.setEmail(resultSet.getString(ColumnName.USER_EMAIL));
             user.setPhoneNumber(resultSet.getString(ColumnName.USER_PHONE_NUMBER));
             user.setLogin(resultSet.getString(ColumnName.USER_LOGIN));
-                user.setPassword(resultSet.getString(ColumnName.USER_PASSWORD));
-                optionalUser = Optional.of(user);
-            } catch (SQLException e) {
-                LOGGER.info("User mappind failed" + e, Level.ERROR);
-                throw new DaoException("Error in user mapping" + e);
-            }
-//        }
+            user.setPassword(resultSet.getString(ColumnName.USER_PASSWORD));
+            optionalUser = Optional.of(user);
+        } catch (SQLException e) {
+            LOGGER.info("User mappind failed" + e, Level.ERROR);
+            throw new DaoException("Error in user mapping" + e);
+        }
         return optionalUser;
     }
 }

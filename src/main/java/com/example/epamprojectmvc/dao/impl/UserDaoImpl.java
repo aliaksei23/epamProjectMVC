@@ -16,9 +16,9 @@ import java.util.Optional;
 
 
 public class UserDaoImpl implements UserDao, BaseDao<User> {
-
-    //    private static final String SELECT_PASSWORD_LOGIN = "SELECT * FROM user WHERE login = ? ";
     private static final String SELECT_PASSWORD_LOGIN = "SELECT * FROM user WHERE login = ?";
+    private static final String ADD_NEW_CUSTOMER = "INSERT INTO user(role_id, name, surname, email, phone_number," +
+            " login, password) " + "VALUE (?, ?, ?, ?, ?, ?, ?)";
 
     private static UserDaoImpl instance = new UserDaoImpl();
 
@@ -29,33 +29,13 @@ public class UserDaoImpl implements UserDao, BaseDao<User> {
         return instance;
     }
 
-//    @Override
-//    public boolean authenticate(String login, String password) throws DaoException {
-//        boolean match = false;
-//        try (Connection connection = ConnectionPool.getInstance().getConnection();
-//             PreparedStatement statement = connection.prepareStatement(SELECT_PASSWORD_LOGIN)) {
-//            statement.setString(1, login);
-//            ResultSet resultSet = statement.executeQuery();
-//
-//            @Language("SQL")
-//            String passFromDb;
-//            if (resultSet.next()) {
-//                passFromDb = resultSet.getString(1);
-//                match = password.equals(passFromDb);
-//            }
-//        } catch (SQLException e) {
-//            throw new DaoException(e);
-////            e.printStackTrace();
-//        }
-//        return match;
-//    }
-
     @Override
     public Optional<User> authenticate(String login, String password) throws DaoException {
         Optional<User> userOptional = Optional.empty();
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_PASSWORD_LOGIN)) {
-            statement.setString(1, login);;
+            statement.setString(1, login);
+            ;
 
             ResultSet resultSet = statement.executeQuery();
             @Language("SQL")
@@ -75,8 +55,25 @@ public class UserDaoImpl implements UserDao, BaseDao<User> {
     }
 
     @Override
-    public boolean insert(User user) {
-        return false;
+    public boolean insert(User user) throws DaoException {
+        try (Connection connection = ConnectionPool.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(ADD_NEW_CUSTOMER, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, String.valueOf(user.getUserRole().getRole_id()));
+            statement.setString(2, user.getName());
+            statement.setString(3, user.getSurname());
+            statement.setString(4, user.getEmail());
+            statement.setString(5, user.getPhoneNumber());
+            statement.setLong(7, Long.parseLong(user.getLogin()));
+            statement.setLong(8, Long.parseLong(user.getPassword()));
+            boolean isAdded = statement.executeUpdate() > 0;
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                user.setId(generatedKeys.getLong(1));
+            }
+            return isAdded;
+        } catch (SQLException e) {
+            throw new DaoException("Error while adding user: " + user, e);
+        }
     }
 
     @Override

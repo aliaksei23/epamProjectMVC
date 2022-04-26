@@ -27,7 +27,7 @@ Registration here =${reg_here}
     <br/>
     Password: <input type="password" name="pass" minlength="4" value=""/>
     <br/>
-    Confirm password : <input type="password" name="confirm-password" minlength="4"/>
+    Confirm password : <input type="password" name="confirm-password" minlength="2"/>
     <br/>
 </form>
 </body>

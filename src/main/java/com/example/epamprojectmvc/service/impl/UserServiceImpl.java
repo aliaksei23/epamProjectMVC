@@ -22,24 +22,6 @@ public class UserServiceImpl implements UserService {
         return instance;
     }
 
-//    @Override
-//    public boolean authenticate(String login, String password) throws ServiceException {
-//        // todo validate login, pass + md5
-//        UserValidatorImpl validator = new UserValidatorImpl();
-//        UserDaoImpl userDao = UserDaoImpl.getInstance();
-////        if (validator.isLoginValid(login)) {
-////            UserDaoImpl userDao = UserDaoImpl.getInstance();
-////        }
-//        boolean match = false;
-//        try {
-//            match = userDao.authenticate(login, password);
-//        } catch (DaoException e) {
-//            throw new ServiceException(e);
-////            e.printStackTrace();
-//        }
-//        return match; //todo
-//    }
-
     @Override
     public Optional<User> authenticate(String login, String password) throws ServiceException {
 
