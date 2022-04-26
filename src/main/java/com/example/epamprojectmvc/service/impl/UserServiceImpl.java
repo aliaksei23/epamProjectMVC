@@ -6,6 +6,7 @@ import com.example.epamprojectmvc.entity.User;
 import com.example.epamprojectmvc.exception.DaoException;
 import com.example.epamprojectmvc.exception.ServiceException;
 import com.example.epamprojectmvc.service.UserService;
+import com.example.epamprojectmvc.util.PasswordEncryptor;
 import com.example.epamprojectmvc.validator.impl.UserValidatorImpl;
 
 import java.util.Optional;
@@ -41,26 +42,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> authenticate(String login, String password) throws ServiceException {
-        // todo validate login, pass + md5
+
         Optional<User> userOptional = Optional.empty();
         UserValidatorImpl validator = new UserValidatorImpl();
-        UserDao userDao = UserDaoImpl.getInstance();
+        UserDaoImpl userDao = UserDaoImpl.getInstance();
         try {
             if (validator.isLoginValid(login) && validator.isPasswordValid(password)) {
-                Optional<String> userPasswordOptional = userDao.authenticate(login, password);
+                Optional<User> user = userDao.authenticate(login, password);
+                if (user.isPresent()) {
+                    String userPassword = user.get().getPassword();
+                    Optional<String> encryptedPassword = PasswordEncryptor.encrypt(password);
+                    if (encryptedPassword.isPresent() && userPassword.equals(encryptedPassword.get())) {
+                        userOptional = user;
+                    }
+                }
             }
-        }
-        UserDaoImpl userDao = UserDaoImpl.getInstance();
-//        if (validator.isLoginValid(login)) {
-//            UserDaoImpl userDao = UserDaoImpl.getInstance();
-//        }
-        boolean match = false;
-        try {
-            match = userDao.authenticate(login, password);
+            return userOptional;
         } catch (DaoException e) {
             throw new ServiceException(e);
-//            e.printStackTrace();
         }
-        return match; //todo
     }
 }

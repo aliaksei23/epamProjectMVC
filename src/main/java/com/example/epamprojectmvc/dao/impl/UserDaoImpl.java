@@ -4,6 +4,9 @@ import com.example.epamprojectmvc.dao.BaseDao;
 import com.example.epamprojectmvc.dao.UserDao;
 import com.example.epamprojectmvc.entity.User;
 import com.example.epamprojectmvc.exception.DaoException;
+import com.example.epamprojectmvc.mapper.ColumnName;
+import com.example.epamprojectmvc.mapper.UserMapper;
+import com.example.epamprojectmvc.mapper.impl.UserMapperImpl;
 import com.example.epamprojectmvc.pool.ConnectionPool;
 import org.intellij.lang.annotations.Language;
 
@@ -14,7 +17,9 @@ import java.util.Optional;
 
 public class UserDaoImpl implements UserDao, BaseDao<User> {
 
-    private static final String SELECT_PASSWORD_LOGIN = "SELECT password FROM user WHERE login = ? ";
+    //    private static final String SELECT_PASSWORD_LOGIN = "SELECT * FROM user WHERE login = ? ";
+    private static final String SELECT_PASSWORD_LOGIN = "SELECT * FROM user WHERE login = ?";
+
     private static UserDaoImpl instance = new UserDaoImpl();
 
     private UserDaoImpl() {
@@ -47,22 +52,26 @@ public class UserDaoImpl implements UserDao, BaseDao<User> {
 
     @Override
     public Optional<User> authenticate(String login, String password) throws DaoException {
+        Optional<User> userOptional = Optional.empty();
         try (Connection connection = ConnectionPool.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(SELECT_PASSWORD_LOGIN)) {
-            statement.setString(1, login);
+            statement.setString(1, login);;
+
             ResultSet resultSet = statement.executeQuery();
-            Optional<User> userOptional
             @Language("SQL")
             String passFromDb;
             if (resultSet.next()) {
-                passFromDb = resultSet.getString(1);
-                match = password.equals(passFromDb);
+                UserMapperImpl userMapper = new UserMapperImpl();
+                passFromDb = resultSet.getString(ColumnName.USER_PASSWORD);
+                boolean match = password.equals(passFromDb);
+                if (match) {
+                    userOptional = userMapper.map(resultSet);
+                }
             }
         } catch (SQLException e) {
             throw new DaoException(e);
-//            e.printStackTrace();
         }
-        return match;
+        return userOptional;
     }
 
     @Override
